@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "danko-startpage",
+  "short_name": "danko-startpage",
+  "version": "0.1",
+  "description": "Overrides the browsers newtab page with a custom startpage.",
+  "author": "dnkmdg",
+  "icons": {
+    "64": "img/icon64.png"
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": [
+    "storage",
+    "bookmarks",
+    "chrome://favicon/"
+  ],
+  "content_security_policy": "img-src https://left-blush-raccoon.faviconkit.com/ https://openweathermap.org;"
+}

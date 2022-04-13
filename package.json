@@ -1,0 +1,32 @@
+{
+  "name": "danko-start",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-pro": "^6.1.1",
+    "@fortawesome/pro-light-svg-icons": "^6.1.1",
+    "@fortawesome/pro-regular-svg-icons": "^6.1.1",
+    "@fortawesome/pro-solid-svg-icons": "^6.1.1",
+    "@fortawesome/pro-thin-svg-icons": "^6.1.1",
+    "@fortawesome/vue-fontawesome": "^2.0.6",
+    "axios": "^0.26.1",
+    "dayjs": "^1.11.0",
+    "eslint": "^8.13.0",
+    "eslint-plugin-vue": "^8.6.0",
+    "hotkeys-js": "^3.8.9",
+    "vite-plugin-chrome-extension": "^0.0.7",
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.0",
+    "autoprefixer": "^10.4.4",
+    "postcss": "^8.4.12",
+    "tailwindcss": "^3.0.23",
+    "vite": "^2.9.0"
+  }
+}
