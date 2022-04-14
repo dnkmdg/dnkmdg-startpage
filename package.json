@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
+    "watch": "vite build --watch",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -19,8 +20,10 @@
     "eslint": "^8.13.0",
     "eslint-plugin-vue": "^8.6.0",
     "hotkeys-js": "^3.8.9",
+    "rollup-plugin-copy": "^3.4.0",
     "vite-plugin-chrome-extension": "^0.0.7",
-    "vue": "^3.2.25"
+    "vue": "^3.2.25",
+    "vue-router": "^4.0.14"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.0",

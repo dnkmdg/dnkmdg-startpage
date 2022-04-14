@@ -11,10 +11,30 @@
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
+  "content_scripts": [{ 
+    "js": [ "content.js"],
+    "matches": [ "<all_urls>"],
+    "css": ["dialog.css"]
+  }],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "web_accessible_resources": ["*.html"],
   "permissions": [
     "storage",
     "bookmarks",
-    "chrome://favicon/"
+    "chrome://favicon/",
+    "commands",
+    "tabs"
   ],
-  "content_security_policy": "img-src https://left-blush-raccoon.faviconkit.com/ https://openweathermap.org;"
+  "content_security_policy": "img-src https://left-blush-raccoon.faviconkit.com/ https://openweathermap.org chrome://favicon/;",
+
+  "commands": {
+    "go-to-bookmark": {
+      "suggested_key": {
+        "mac": "Ctrl+K"
+      },
+      "description": "Activate keylistener on start page"
+    }
+  }
 }
