@@ -1,8 +1,23 @@
 <template>
     <div
-        class="lg:grid lg:gap-6"
+        class="pb-8 lg:grid lg:gap-6"
         :class="gridClass"
     >
+        <div class="absolute bottom-0 right-0 pb-4 pr-4">
+            <input
+                ref="fauxInput"
+                v-model="keyString"
+                type="text"
+                class="w-0 opacity-0"
+                @blur="focusOnTrap"
+                @keyup.esc="closeDialog"
+            >
+            <span
+                v-if="keyString"
+                class="block px-3 py-2 text-xl text-white uppercase bg-gray-900"
+            >{{ keyString }}</span>
+        </div>
+        
         <div
             v-for="group in groups"
             :key="group.name"
@@ -15,7 +30,11 @@
                 <button
                     v-for="(link, index) in group.children"
                     :key="`link-${index}`"
-                    class="flex items-center w-full px-3 py-3 text-xs transition-all bg-gray-700 hover:bg-gray-600"
+                    class="flex items-center w-full px-3 py-3 text-xs text-gray-200 transition-all bg-gray-700 hover:bg-gray-600"
+                    :class="{
+                        'bg-gray-600 text-teal-400': shouldHightlight(keymap[link.url]) === 1,
+                        'bg-teal-300 text-gray-800': shouldHightlight(keymap[link.url]) === 2
+                    }"
                     @click="goToUrl(link.url)"
                 >
                     <!-- <img
@@ -26,13 +45,13 @@
                         :src="`chrome://favicon/size/64@1x/${getDomain(link.url)}`"
                         class="w-6 h-6 align-middle"
                     >
-                    <span class="pr-2 ml-2 overflow-hidden text-gray-200 whitespace-nowrap text-ellipsis">
+                    <span class="pr-2 ml-2 overflow-hidden whitespace-nowrap text-ellipsis">
                         {{ link.title }} 
                     </span>
                     <span
-                        class="w-5 p-1 ml-auto text-xs leading-4 text-gray-500 bg-gray-800 rounded-sm bg-opacity-30 shrink-0"
+                        class="p-1 px-1 ml-auto text-xs leading-4 text-gray-100 bg-opacity-100 rounded-sm bg-slate-900 min-w-5 shrink-0"
                         :class="{
-                            'text-gray-100 bg-slate-900 bg-opacity-100': keyboardMode
+                            'hidden': !keyboardMode,
                         }"
                     >
                         {{ keymap[link.url] }}
@@ -64,19 +83,10 @@
 </template>
 
 <script>
-import data from '../data/config.json'
 import hotkeys from 'hotkeys-js'
+import data from '../data/faker.json'
 
-const keys = [
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
-    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 
-    'U', 'V', 'X', 'Y', 'Z', 'Å', 'Ä', 'Ö'
-    // '^0', '^1', '^2', '^3', '^4', '^5', '^6', '^7', '^8', '^9', 
-    // '^A', '^B', '^C', '^D', '^E', '^F', '^G', '^H', '^I', '^J', 
-    // '^K', '^L', '^M', '^N', '^O', '^P', '^Q', '^R', '^S', '^T', 
-    // '^U', '^V', '^X', '^Y', '^Z', '^Å', '^Ä', '^Ö' 
-]
+import { keys } from '../data/config'
 
 export default {
     data: () => ({
@@ -88,7 +98,11 @@ export default {
 
         goingToUrl: false,
 
-        keyboardMode: false
+        keyboardMode: false,
+
+        keyString: '',
+
+        keyTrap: null
     }),
 
     computed: {
@@ -116,39 +130,77 @@ export default {
         }  
     },
 
+    watch: {
+        keyString(to, from){
+            clearTimeout(this.keyTrap)
+
+            if(to.length === 0){
+                return
+            }
+
+            this.keyTrap = setTimeout(() => {
+                clearTimeout(this.keyTrap)
+                this.keyHandler(to)
+            }, 300)
+        }
+    },
+
     async mounted(){
         this.setBookmarks()  
         
-        chrome.runtime.onMessage.addListener((request) => {
-            if(request.type === 'toggle-keyboard-mode'){
-                this.toggleKeyboardMode(request.active)
-            }
-        })
-
-        hotkeys('*', (e) => {
-            const key = e.key.toUpperCase()
-            const keyIndex = keys.indexOf(key)
-            const bookmark = Object.keys(this.keymap)[keyIndex]
-
-            console.log(e, key, bookmark, keyIndex, keys)
-
-            if(!this.keyboardMode || !bookmark || e.metaKey) {
-                if(e.keyCode === 27){
-                    this.closeDialog()
+        if(window.chrome && window.chrome.runtime){
+            chrome.runtime.onMessage.addListener((request) => {
+                if(request.type === 'toggle-keyboard-mode'){
+                    this.toggleKeyboardMode(request.active)
                 }
-            
-                return 
-            }
-
-            e.preventDefault()
-            this.goToUrl(bookmark)
-        })
+            })
+        }
     },
 
     methods: {
-        async toggleKeyboardMode(active){
+        shouldHightlight(text){
+            const keyString = this.keyString.toUpperCase()
+
+            if(this.keyString && text.startsWith(keyString) && text !== keyString){
+                return 1
+            }
+
+            if(this.keyString && text === keyString){
+                return 2
+            }
+
+            return 0
+        },
+
+        focusOnTrap(){
+            this.$refs.fauxInput.focus()
+        },
+
+        keyHandler(keyString){
+            const key = keyString.toUpperCase()
+            const keyIndex = keys.indexOf(key)
+            const bookmark = Object.keys(this.keymap)[keyIndex]
+
+            // console.log(e, key, bookmark, keyIndex, keys)
+
+            if(!this.keyboardMode || !bookmark) {
+                window.$log.error('dnkmdg', `${key} is unmapped`)
+                this.keyString = ''
+
+                return false
+            }
+
+            this.goToUrl(bookmark)
+            this.keyString = ''
+        },
+
+        toggleKeyboardMode(active){
             this.keyboardMode = active
-            window.focus()
+    
+            if(active){
+                this.goingToUrl = false
+                this.focusOnTrap()
+            }
         },
 
         getDomain(url){
@@ -170,6 +222,12 @@ export default {
         },
 
         goToUrl(url){
+            if(window.location.href === url){
+                this.closeDialog()
+                
+                return 
+            }
+            
             this.goingToUrl = url
 
             if(!this.keyboardMode){
@@ -177,30 +235,27 @@ export default {
 
                 return
             }
-            
-            const params = { 
-                active: true,
-                currentWindow: true 
-            }
 
-            chrome.tabs.query(params, (tabs) => {
-                chrome.tabs.sendMessage(tabs[0].id, { 
-                    type: 'go-to-url',
-                    url 
-                })
+            this.sendMessage( { 
+                type: 'go-to-url',
+                url 
             })
         },
 
         closeDialog(){
+            this.sendMessage({ 
+                type: 'close-dialog'
+            })
+        },
+
+        sendMessage(payload){
             const params = { 
                 active: true,
                 currentWindow: true 
             }
 
             chrome.tabs.query(params, (tabs) => {
-                chrome.tabs.sendMessage(tabs[0].id, { 
-                    type: 'close-dialog'
-                })
+                chrome.tabs.sendMessage(tabs[0].id, payload)
             })
         },
 
