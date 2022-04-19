@@ -1,5 +1,5 @@
 <template>
-    <div class="inset-x-0 top-0 flex w-2/3 h-24 pt-8 mb-12 text-gray-400 lg:w-full lg:px-8 lg:absolute lg:flex-row">
+    <div class="inset-x-0 top-0 flex w-2/3 h-24 pt-8 mb-12 text-gray-800 dark:text-gray-400 lg:w-full lg:px-8 lg:absolute lg:flex-row">
         <div class="flex flex-col">
             <span class="text-sm capitalize">{{ day }}</span>
             <span class="text-3xl">{{ time }}</span>

@@ -14,7 +14,7 @@
             >
             <span
                 v-if="keyString"
-                class="block px-3 py-2 text-xl text-white uppercase bg-gray-900"
+                class="block px-3 py-2 text-xl uppercase dark:text-white dark:bg-gray-900"
             >{{ keyString }}</span>
         </div>
         
@@ -23,17 +23,17 @@
             :key="group.name"
             class="mb-12 text-sm lg:h-full lg:mb-0"
         >
-            <h3 class="text-teal-500 ">
+            <h3 class="text-purple-400 dark:text-teal-500">
                 {{ group.title }}
             </h3>
             <div class="space-y-1 lg:h-full">
                 <button
                     v-for="(link, index) in group.children"
                     :key="`link-${index}`"
-                    class="flex items-center w-full px-3 py-3 text-xs text-gray-200 transition-all bg-gray-700 hover:bg-gray-600"
+                    class="flex items-center w-full px-3 py-3 text-xs transition-all bg-gray-100 dark:text-gray-200 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
                     :class="{
-                        'bg-gray-600 text-teal-400': shouldHightlight(keymap[link.url]) === 1,
-                        'bg-teal-300 text-gray-800': shouldHightlight(keymap[link.url]) === 2
+                        'bg-gray-300 dark:bg-gray-600 dark:text-teal-400': shouldHightlight(keymap[link.url]) === 1,
+                        'bg-purple-200 dark:bg-teal-300 dark:text-gray-800': shouldHightlight(keymap[link.url]) === 2
                     }"
                     @click="goToUrl(link.url)"
                 >
@@ -49,7 +49,7 @@
                         {{ link.title }} 
                     </span>
                     <span
-                        class="p-1 px-1 ml-auto text-xs leading-4 text-gray-100 bg-opacity-100 rounded-sm bg-slate-900 min-w-5 shrink-0"
+                        class="p-1 px-1 ml-auto text-xs leading-4 text-gray-800 bg-gray-300 bg-opacity-100 rounded-sm dark:text-gray-100 dark:bg-slate-900 min-w-5 shrink-0"
                         :class="{
                             'hidden': !keyboardMode,
                         }"
@@ -70,7 +70,7 @@
         >
             <div
                 v-if="goingToUrl"
-                class="absolute inset-0 flex items-center justify-center text-white bg-gray-800 loading"
+                class="absolute inset-0 flex items-center justify-center bg-gray-100 dark:text-white dark:bg-gray-800 loading"
             >
                 <img
                     :src="`chrome://favicon/size/64@1x/${getDomain(goingToUrl)}`"
@@ -141,7 +141,7 @@ export default {
             this.keyTrap = setTimeout(() => {
                 clearTimeout(this.keyTrap)
                 this.keyHandler(to)
-            }, 300)
+            }, 3000)
         }
     },
 

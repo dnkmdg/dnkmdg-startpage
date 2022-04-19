@@ -1,12 +1,12 @@
 <template>
-    <div class="bg-gray-800 h-[100vh] flex flex-col items-center justify-center font-fira w-full">
+    <div class="dark:bg-gray-800 h-[100vh] flex flex-col items-center justify-center w-full">
         <HeaderRow />
 
         <GreetingRow />
 
         <BookmarksRow class="w-2/3" />
 
-        <SettingsModal class="hidden" />
+        <SettingsModal />
     </div>
 </template>
 
@@ -22,10 +22,9 @@ export default {
         GreetingRow,
         BookmarksRow,
         SettingsModal
-    },
-
-    mounted(){
-        
     }
+
+    
 }
 </script>
+

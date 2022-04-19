@@ -41,14 +41,14 @@ function createModal(){
 }
 
 function closeModal(){
-    console.log('CLOSING MODAL')
+    // console.log('CLOSING MODAL')
     toggleKeyboardMode(false)
     dialog.classList.remove('open')
     modalVisible = false
 }
 
 function showModal(){
-    console.log('SHOWING MODAL')
+    // console.log('SHOWING MODAL')
 
     const iframe = document.querySelector('#dnk-popup-content')
 

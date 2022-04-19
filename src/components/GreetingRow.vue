@@ -1,9 +1,9 @@
 <template>
     <div class="grid w-2/3 mb-12 text-center">
-        <h1 class="mb-1 text-4xl text-white">
+        <h1 class="mb-1 text-4xl dark:text-white">
             {{ randomGreeting }}!
         </h1>
-        <span class="text-xl text-white">{{ message }}</span>
+        <span class="text-xl text-gray-800 dark:text-white">{{ message }}</span>
     </div>
 </template>
 
