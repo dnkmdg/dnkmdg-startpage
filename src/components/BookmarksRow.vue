@@ -141,7 +141,7 @@ export default {
             this.keyTrap = setTimeout(() => {
                 clearTimeout(this.keyTrap)
                 this.keyHandler(to)
-            }, 3000)
+            }, 300)
         }
     },
 
