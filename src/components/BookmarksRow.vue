@@ -10,7 +10,8 @@
                 type="text"
                 class="w-0 opacity-0"
                 @blur="focusOnTrap"
-                @keyup.esc="closeDialog"
+                @keydown.shift="isShiftKey = true"
+                @keyup="handleKeyUp"
             >
             <span
                 v-if="keyString"
@@ -102,7 +103,9 @@ export default {
 
         keyString: '',
 
-        keyTrap: null
+        keyTrap: null,
+
+        isShiftKey: false
     }),
 
     computed: {
@@ -158,6 +161,16 @@ export default {
     },
 
     methods: {
+        handleKeyUp(e){
+            if(e.key === 'Escape'){
+                this.closeDialog
+            }
+
+            if(e.key === 'Shift'){
+                this.isShiftKey = false
+            }
+        },
+
         shouldHightlight(text){
             const keyString = this.keyString.toUpperCase()
 
@@ -181,8 +194,6 @@ export default {
             const keyIndex = keys.indexOf(key)
             const bookmark = Object.keys(this.keymap)[keyIndex]
 
-            // console.log(e, key, bookmark, keyIndex, keys)
-
             if(!this.keyboardMode || !bookmark) {
                 window.$log.error('dnkmdg', `${key} is unmapped`)
                 this.keyString = ''
@@ -190,7 +201,7 @@ export default {
                 return false
             }
 
-            this.goToUrl(bookmark)
+            this.goToUrl(bookmark, this.isShiftKey)
             this.keyString = ''
         },
 
@@ -221,7 +232,7 @@ export default {
             }            
         },
 
-        goToUrl(url){
+        goToUrl(url, newTab = false){
             if(window.location.href === url){
                 this.closeDialog()
                 
@@ -238,6 +249,7 @@ export default {
 
             this.sendMessage( { 
                 type: 'go-to-url',
+                newTab,
                 url 
             })
         },

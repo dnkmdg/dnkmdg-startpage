@@ -13,7 +13,12 @@ chrome.runtime.onMessage.addListener((request) => {
         if(window.location.href === request.url){
             closeModal()
         } else {
-            window.location = request.url
+            if(request.newTab === true){
+                window.open(request.url, '_blank')
+                closeModal()
+            } else {
+                window.location = request.url
+            }
         }
     } 
 
