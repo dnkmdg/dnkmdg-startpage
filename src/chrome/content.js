@@ -1,6 +1,7 @@
 let modalVisible = false
-const modal = createModal()
-const dialog = document.querySelector('.dnk-dialog')
+// const modal = createModal()
+var modal = null
+var dialog = null
 
 chrome.runtime.onMessage.addListener((request) => {
     if(request.type === 'go-to-bookmark'){
@@ -54,6 +55,9 @@ function closeModal(){
 
 function showModal(){
     // console.log('SHOWING MODAL')
+    
+    modal = createModal()
+    dialog = document.querySelector('.dnk-dialog')
 
     const iframe = document.querySelector('#dnk-popup-content')
 
